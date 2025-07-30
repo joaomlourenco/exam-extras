@@ -1,0 +1,139 @@
+% % \edef\POINTSREM{\fpeval{\POINTSTOTAL-\POINTSMC}}
+% % % \SUBTRACT{\POINTSTOTAL}{\POINTSMC}{\POINTSREM}
+% % \edef\POINTSMCQ{\fpeval{\POINTSMC/\mynumquestionsmcq}}
+% % % \DIVIDE{\POINTSMC}{\mynumquestionsmcq}{\POINTSMCQ}
+% \SUBTRACT{\mynumquestions}{\mynumquestionsmcq}{\NUMQNOTMC}
+% \ifnum\NUMQNOTMC>0
+% \ifnum\numparts<1\relax\def\numparts{1}\fi
+% \DIVIDE{\POINTSREM}{\numparts}{\POINTSNOTMCQ}
+% \else
+% \def\POINTSNOTMCQ{0}
+% \fi
+\def\NQ{
+  \ifnum\mynumquestions>1 \mynumquestions\else 1 \fi
+}
+
+\def\PPQ{\fpeval{round(20/\NQ,3)}}
+
+\providecommand{\MAXPENALTYAT}{5}
+\providecommand{\MAXPENALTYPERCENT}{33}
+\edef\PENALTYSTEP{\fpeval{\MAXPENALTYPERCENT/(\MAXPENALTYAT-1)}}
+\def\printpenalty{%
+  \null\hfill
+  \foreach[count=\i] \percentage in {0, \PENALTYSTEP, ..., \MAXPENALTYPERCENT} {
+    \edef\mypercent{\fpeval{round(\percentage,2)}}
+    $ \ifdim\mypercent pt=\MAXPENALTYPERCENT pt\ge\fi
+      \i =
+      \fpeval{round(\PPQ*\mypercent/100,3)}~(\mypercent\%)$
+  }
+  \hfill\null
+}
+
+
+\def\headerenglish{%
+\begin{center}
+  {\Large Please read these instructions carefully!}
+  \begin{tcolorbox}[width=0.9\textwidth]
+		\small% \setdefaultleftmargin{1em}{}{}{}{.55em}{.55em}
+		\begin{itemize}[itemsep=1pt,leftmargin=0.5cm]
+      \itemsep=0pt
+      \item Answer the questions on the answer sheet.
+      \item You may use the back of the test paper sheets for scratch work.
+      \item Do not unstaple the test paper sheets!
+      \item Instructions for answering: 
+      \newcommand{\CC}{\textcolor{black!60}{\CIRCLE}}
+      \newcommand{\cc}{\textcolor{Black!60}{\Circle}}
+      \begin{tabular}[t]{lccccc}
+        & ~A & B & C & D & E~~\\
+            Select the answer (A):                        
+                & (\CC    & \cc   & \cc   & \cc   & \cc)\\
+            Replace the answer (A) with answer (C):       
+                & (\rlap{\CC}{\kern-1pt$\bigtimes$}
+                          & \cc   & \CC   & \cc   & \cc)\\
+            Cancel (C) and reactivate the answer (A):     
+                & (\rlap{\raisebox{-1.5pt}{\kern-2.35pt\LARGE\Circle}}%
+                      {\rlap{\CC}{\kern-1pt$\bigtimes$}} 
+                          & \cc   & \rlap{\CC}{\kern-1pt$\bigtimes$}
+                                          & \cc   & \cc)\\
+            Do not answer (leave all circles unfilled):   
+                & (\cc    & \cc    & \cc   & \cc  & \cc)\\
+            Do not answer (two or more answers crossed):  
+                & (\rlap{\CC}{\kern-1pt$\bigtimes$} 
+                          & \cc    & \cc   & \rlap{\CC}{\kern-1pt$\bigtimes$} 
+                                                  & \cc)\\
+            \textbf{NEVER leave a single answer crossed}: 
+                & \raisebox{1.5pt}{\makebox[0pt][l]{\kern-3pt\rule{3.7cm}{1pt}}}%
+                  (\cc    & \rlap{\CC}{\kern-1pt$\bigtimes$} 
+                                   & \cc   & \cc  & \cc)\\
+      \end{tabular}
+      \item This \MakeLowercase{\TESTTYPE} has~\numquestions\ questions, each question is worth \PPQ\ points.
+      \item \textbf{PENALTY POINTS} for incorrect answers:\\%\hspace*{4em}
+      \printpenalty
+		\end{itemize}
+  \end{tcolorbox}
+\end{center}
+% \smallskip
+\begin{tcolorbox}
+  \rule{0pt}{4ex}%
+  \textbf{NAME:} \hrulefill\hrulefill\hrulefill\quad\textbf{Number:} \hrulefill
+\end{tcolorbox}
+}
+
+
+
+\newcommand\headerportuguese{%
+\begin{center}
+  {\Large Por favor leia estas instruções com atenção!}
+  \begin{tcolorbox}[width=0.9\textwidth]
+		\small%\setdefaultleftmargin{1em}{}{}{}{.55em}{.55em}
+		\begin{itemize}[itemsep=1pt,leftmargin=0.5cm]
+      \item Responda às questões na folha de resposta.
+      \item Pode usar as costas do enunciado para rascunho.
+      \item Não desagrafe o enunciado!
+      \item Instruções para responder: 
+      \newcommand{\C}{\textcolor{black!60}{\CIRCLE}}
+      \newcommand{\Cc}{\Textcolor{Black!60}{\Circle}}
+      \begin{tabular}[t]{lccccc}
+        & ~A & B & C & D & E~~\\
+            Seleccionar a resposta (A):                        
+                & (\CC    & \cc   & \cc   & \cc   & \cc)\\
+            Substituir a resposta (A) pela resposta (C):     
+                & (\rlap{\CC}{\kern-1pt$\bigtimes$}
+                          & \cc   & \CC   & \cc   & \cc)\\
+            Cancelar (C) e reactivar a resposta (A):   
+                & (\rlap{\raisebox{-1.5pt}{\kern-2.35pt\LARGE\Circle}}%
+                      {\rlap{\CC}{\kern-1pt$\bigtimes$}} 
+                          & \cc   & \rlap{\CC}{\kern-1pt$\bigtimes$}
+                                          & \cc   & \cc)\\
+            Não responder (deixar todas em branco):
+                & (\cc    & \cc    & \cc   & \cc  & \cc)\\
+            Não responder (duas respostas quaisquer cruzadas): 
+                & (\rlap{\CC}{\kern-1pt$\bigtimes$} 
+                          & \cc    & \cc   & \rlap{\CC}{\kern-1pt$\bigtimes$} 
+                                                  & \cc)\\
+            \textbf{NUNCA deixar uma resposta cruzada solitária}: 
+                & \raisebox{1.5pt}{\makebox[0pt][l]{\kern-3pt\rule{3.7cm}{1pt}}}%
+                  (\cc    & \rlap{\CC}{\kern-1pt$\bigtimes$} 
+                                   & \cc   & \cc  & \cc)\\
+      \end{tabular}
+      \item Este \MakeLowercase{\TESTTYPE} tem~\numquestions\ questões, cada questão tem uma cotação de \fpeval{round(20/\NQ,3)}\ pontos.
+      \item \textbf{DESCONTO} por respostas erradas (em percentagem da cotação da respectiva questão):\\%
+      \printpenalty
+		\end{itemize}
+  \end{tcolorbox}
+\end{center}
+% \smallskip
+\begin{tcolorbox}
+  \rule{0pt}{4ex}%
+  \textbf{Nome:} \hrulefill\hrulefill\hrulefill\quad\textbf{Número:} \hrulefill
+\end{tcolorbox}
+}
+
+% \thispagestyle{plain}
+
+
+\newcommand\headerportuges{\headerportuguese}
+\newcommand\headerportugues{\headerportuguese}
+
+
+\csname header\languagename\endcsname

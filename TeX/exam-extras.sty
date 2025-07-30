@@ -1,0 +1,208 @@
+% myexam-extras
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{multicol}
+\RequirePackage[inline,shortlabels]{enumitem}
+
+\premulticols=0pt
+% \RequirePackage{enumitem}
+\multicolsep=\itemsep
+
+\RequirePackage{tikz}
+\newcommand\encircle[1]{%
+  \tikz[baseline=(X.base)] 
+    \node (X) [draw, shape=circle, inner sep=0] {\strut #1};}
+
+\renewcommand\choicelabel{\encircle{\textsf{\thechoice}}}
+% \RequirePackage{xpatch}
+
+\def\mynumquestions{\@ifundefined{exam@numquestions}%
+  {0}%
+  \exam@numquestions
+}% mynumquestions
+
+\def\mynumquestionsmcq{\@ifundefined{exam@numquestionsmcq}%
+  {1}%
+  {\exam@numquestionsmcq}%
+}% mynumquestionsmc
+
+\NewCommandCopy\oldchoices\choices
+\NewCommandCopy\endoldchoices\endchoices
+
+\newif\ifmulticols
+\newcounter{exam@numquestionsmcq}
+\renewenvironment{choices}[1][]{%
+  % \smallskip
+  \stepcounter{exam@numquestionsmcq}
+  \multicolsfalse
+  \ifx\relax#1\relax\else
+    \multicolstrue
+    % \medskip
+    \begin{multicols}{#1}
+  \fi
+  \oldchoices
+}{%
+  \endoldchoices
+  \ifmulticols
+    \end{multicols}
+  \fi
+}
+
+\AtEndDocument{%
+    \immediate\write\@mainaux
+      {\string\gdef\string\exam@numquestionsmcq{\theexam@numquestionsmcq}}%
+}
+
+\let\oldquestionlabel\questionlabel
+\newcommand\myrule[1][1pt]{\makebox[0pt]{\raisebox{2.5ex}{\rule{3\textwidth}{#1}}}}
+\renewcommand\questionlabel{\questionseparator\\\oldquestionlabel}
+
+
+\CorrectChoiceEmphasis{\color{red!80!black}}%\bfseries}
+
+% \qformat{Question \thequestion \dotfill \thepoints}
+
+
+\def\@newsectiontitle{}
+\newif\if@newsection
+\@newsectionfalse
+\newcommand{\examnewsection}[1][]{\@newsectiontrue\def\@newsectiontitle{\MakeUppercase{#1}}}
+\newcommand{\questionseparator}[1][cyan!90!black]{{%
+  \ifprintanswers%
+    \if@newsection%
+      \global\@newsectionfalse%
+      \color{#1}%
+      \myrule[2pt]%
+      {\centering\makebox[0pt][l]{\raisebox{3.5ex}{\hspace*{-\leftmargin}\@newsectiontitle}}}%
+    \else\myrule\fi
+  \else\myrule\fi%
+}}
+
+
+
+\newcommand{\defcapb}[2][]{%
+  \ifx\relax#1\relax
+    \expandafter\newcommand\csname#2\endcsname{\textbf{#2}\xspace}%
+  \else
+    \expandafter\newcommand\csname#2\endcsname{\textbf{#1}\xspace}%
+  \fi
+}
+\defcapb{TRUE}
+\defcapb{FALSE}
+\defcapb[IS]{IS}
+\defcapb[IS NOT]{ISNOT}
+\defcapb[DOES NOT]{DOESNOT}
+\defcapb[NÃO]{NAO}
+\defcapb{SIM}
+\defcapb[NÃO É]{NAOE}
+\defcapb{VERDADEIRA}
+\defcapb{VERDADEIRO}
+\defcapb{FALSA}
+\defcapb{FALSO}
+
+
+\newcommand{\BLOOM}[1]{\ifprintanswers\textcolor{blue}{\textbf{[#1] }}\fi}
+
+\setlength{\abovecaptionskip}{2pt plus 0pt minus 2pt}
+\setlength{\belowcaptionskip}{2pt plus 0pt minus 2pt}
+
+\newcounter{XXX}
+\newcommand{\exampart}[1]{
+\end{questions}
+\setcounter{XXX}{\value{numquestions}}
+\begin{center}
+	\LARGE
+	\vspace{2ex}
+	\begin{tabular}{p{\linewidth}}
+		\toprule
+		\centering Part #1\\
+		% \bottomrule
+	\end{tabular}
+\end{center}
+\begin{questions}
+\setcounter{question}{\value{XXX}}
+}
+
+
+\newlength{\myboxheight}
+\newlength{\myboxdepth}
+
+% \newsavebox{\fmbox}
+% \CorrectAnswerEmphasis{%
+%   \begin{lrbox}{\fmbox}%
+%     \begin{varwidth}{\linewidth}%
+% }{%
+%     \end{varwidth}
+%   \end{lrbox}
+%   \settoheight{\myboxheight}{\usebox{\fmbox}}
+%   \settoheight{\myboxdepth}{\usebox{\fmbox}}
+%   \raisebox{-\myboxheight+1.4mm}{%
+%     \tcbox[colback=Apricot,left=1mm,right=1mm,top=-0.1mm,bottom=0.1mm,boxsep=0mm,colframe=Apricot]{\usebox{\fmbox}}%
+%   }
+% }
+% \CorrectChoiceEmphasis{}
+
+\newcommand{\CHOICE}{\CorrectChoice}
+
+% \newenvironment{putinbox}
+% {\ifcsname fmbox\endcsname\else\newsavebox{\fmbox}\fi\begin{lrbox}{\fmbox}}%
+% {\end{lrbox}\usebox{\fmbox}}
+\ifcsname fmbox\endcsname\else\newsavebox{\fmbox}
+\newcommand{\choicebox}[1]{\sbox{\fmbox}{#1}\usebox{\fmbox}}
+
+\protected\long\def\appto#1#2{%
+  \edef#1{%
+    \unexpanded\expandafter{#1#2}%
+  }%
+}
+\protected\long\def\preto#1#2{%
+  \edef#1{%
+    \unexpanded{#2}%
+    \unexpanded\expandafter{#1}%
+  }%
+}
+
+% \renewcommand{\questionshook}{\preto\thequestiontitle{\vspace{2ex}\hrule}}
+
+
+% m=mandatory argument
+% O{}=optional argument
+\DeclareTCBListing{codesnippet}{ m O{} }{
+    colback=white,
+    colframe=black!70,
+    listing only,
+    listing remove caption=true,
+    minted language=#1,
+    listing engine=minted,
+    minted style=material,
+    minted options={
+        linenos,
+        breaklines,
+        numbersep=3mm
+    },
+    % title={#2},
+    width=\linewidth,
+    breakable,
+    enhanced jigsaw,
+    #2
+}
+
+
+\newenvironment{splitquestion}[2][4em]{
+  \preto{\choices}{\medskip}
+  \newcommand{\nextpart}{
+    \end{minipage}\hfill
+    \begin{minipage}[t]{\sizeright}
+  }
+    \def\sizeleft{\dimexpr\fpeval{(1-#2)}\textwidth-#1\relax}
+    \def\sizeright{#2\textwidth}
+    \begin{minipage}[t]{\sizeleft}
+  }{%
+  \end{minipage}
+}
+
+
+
+
+\DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}
+
+
