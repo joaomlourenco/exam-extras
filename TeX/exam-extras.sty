@@ -3,6 +3,14 @@
 \RequirePackage{multicol}
 \RequirePackage[inline,shortlabels]{enumitem}
 
+
+
+%% ===================================================
+% Avoind indentation of choices
+\def\choiceshook{\setlength{\leftmargin}{0pt}}
+%% ===================================================
+
+
 \premulticols=0pt
 % \RequirePackage{enumitem}
 \multicolsep=\itemsep
@@ -101,6 +109,7 @@
 
 
 \newcommand{\BLOOM}[1]{\ifprintanswers\textcolor{blue}{\textbf{[#1] }}\fi}
+\newcommand{\Bloom}{\BLOOM}
 
 \setlength{\abovecaptionskip}{2pt plus 0pt minus 2pt}
 \setlength{\belowcaptionskip}{2pt plus 0pt minus 2pt}
@@ -204,5 +213,3 @@
 
 
 \DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}
-
-
