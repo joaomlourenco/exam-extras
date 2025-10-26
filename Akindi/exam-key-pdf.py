@@ -7,7 +7,7 @@ Usage:
 
 Assumptions:
 - Versioned sources are named "<prefix>-?.tex" (single-character version tag).
-- A template "exam-key.tex" exists alongside this script and uses \FILE, \VERSION, \KEY.
+- A template "exam-key.tex" exists alongside this script and uses \\FILE, \\VERSION, \\KEY.
 - The extractor "exam-extract-key.py" exists alongside this script and prints one
   tab-separated line: "<version>\t<ans1>\t<ans2>\t...".
 - latexmk is available in PATH.
@@ -32,6 +32,31 @@ def run(cmd, cwd=None):
         sys.stderr.write(f"[ERROR] Command failed ({e.returncode}): {' '.join(cmd)}\n")
         sys.exit(e.returncode)
 
+def load_keys_map(filename):
+    """
+    Read keys from file 'F.keys' and return a dict:
+      {
+        'A': ['A', 'C', 'C', 'A', 'B', 'B', 'C', 'D', 'B', 'B'],
+        'B': ['ABC', 'CD', 'C', 'A', 'B', 'B', 'C', 'BD', 'B', '*'],
+        ...
+      }
+    """
+    mapping = {}
+
+    with open(filename, 'r', encoding='utf-8') as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue  # skip empty or commented lines
+
+            parts = line.split('\t')
+            key = parts[0]
+            values = parts[1:]  # everything after the first entry
+            mapping[key] = ",".join(values)
+
+    return mapping
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("prefix", help="Prefix for versioned TeX files, e.g., 'exam' for exam-A.tex, exam-B.tex")
@@ -50,62 +75,62 @@ def main():
         sys.exit(1)
 
     prefix = args.prefix
-    file_prefix = f"{prefix}-"        # matches original script’s $PREFIX
-    exam_key_prefix = f"{file_prefix}key"  # e.g., "exam-key"
-
+    
     # Discover versions matching "<prefix>-?.tex" (single-character version tag).
+    file_prefix = f"{prefix}"        # matches original script’s $PREFIX
     versioned = sorted(glob.glob(f"{file_prefix}?.tex"))
     if not versioned:
+        file_prefix = f"{prefix}-"        # matches original script’s $PREFIX-
+        # Discover versions matching "<prefix>-?.tex" (single-character version tag).
+        versioned = sorted(glob.glob(f"{file_prefix}?.tex"))
+        
+    if not versioned:
         # Mirror the shell script behavior: exit quietly if no matches.
-        sys.stderr.write(f"[ERROR] No files found for prefix={file_prefix}.\n")
+        sys.stderr.write(f"[ERROR] No files found for prefix={prefix}.\n")
         sys.stderr.write("")
         sys.exit(1)
+
+    exam_key_prefix = f"{file_prefix}key"  # e.g., "exam-key"
 
     # Extract version tags (the character after the last hyphen, before .tex).
     versions = [Path(p).stem.split("-")[-1] for p in versioned]
 
     # Phase 1: run extractor per version, capture to "<prefix>-key-<v>.txt"
-    for v in versions:
-        tex_path = f"{file_prefix}{v}.tex"
-        out_txt = f"{exam_key_prefix}-{v}.txt"
-        # Capture stdout of the extractor
-        try:
-            result = subprocess.run(
-                [sys.executable, str(extract_key), tex_path],
-                check=True,
-                capture_output=True,
-                text=True,
-            )
-        except subprocess.CalledProcessError as e:
-            sys.stderr.write(f"[ERROR] Extractor failed for {tex_path} ({e.returncode}).\n")
-            sys.stderr.write(e.stderr or "")
-            sys.exit(e.returncode)
+    tex_path = f"{file_prefix}"
+    out_txt = f"{file_prefix.removesuffix('-')}.keys"
+    try:
+        result = subprocess.run(
+            [sys.executable, str(extract_key), tex_path],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except subprocess.CalledProcessError as e:
+        sys.stderr.write(f"[ERROR] Extractor failed for {tex_path} ({e.returncode}).\n")
+        sys.stderr.write(e.stderr or "")
+        sys.exit(e.returncode)
+    Path(out_txt).write_text(result.stdout)
 
-        Path(out_txt).write_text(result.stdout)
+    if not Path(out_txt).exists():
+        sys.stderr.write(f"[ERROR] Missing extracted key file: {out_txt}\n")
+        sys.exit(1)
+
+    # create a map with version to its keys
+    keys = load_keys_map(out_txt)
+
 
     # Phase 2: compile one PDF per version using latexmk and pretex definitions
     for v in versions:
-        txt_path = Path(f"{exam_key_prefix}-{v}.txt")
-        if not txt_path.exists():
-            sys.stderr.write(f"[ERROR] Missing extracted key file: {txt_path}\n")
-            sys.exit(1)
-
-        # Expect a single line: "<V>\t<k1>\t<k2>\t..."
-        line = txt_path.read_text().strip().splitlines()[0] if txt_path.read_text().strip() else ""
-        if not line:
-            sys.stderr.write(f"[ERROR] Empty key file: {txt_path}\n")
-            sys.exit(1)
-
-        fields = line.split("\t")
-        V = fields[0].strip()
-        K = ",".join(f.strip() for f in fields[1:] if f.strip())
-
+        
+        V = v.upper()
+        K = keys[V]
+        
         # Build -usepretex payload:
         # \FILE: the TeX base name prefix (without the version character), e.g., "exam-"
         # \VERSION: the version token (from extractor; often equals v)
         # \KEY: comma-separated list of answers
         # Note: backslashes must be escaped for the shell, hence the double escaping here.
-        pretex = f"\\def\\FILE{{{file_prefix}}}\\def\\VERSION{{{V}}}\\def\\KEY{{{K}}}"
+        pretex = f"\\def\\FILE{{{file_prefix.removesuffix('-')}}} \\def\\VERSION{{{V}}} \\def\\KEY{{{K}}} \\def\\SOURCE{{{script_dir}}}"
 
         # latexmk call (quiet failure-tolerant mode -f, PDF output)
         cmd = [

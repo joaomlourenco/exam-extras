@@ -12,6 +12,17 @@
 \pagestyle{empty}
 
 
+
+
+%––––– example answer key (40 questions) –––––
+\providecommand\KEY{A,AB,ABC,ABCD,A,B,C,*,A,B,C,D,A,B,C,D,A,B,C,D,A,B,C,D,A,B,C,D,A,B,C,D,A,B,C,D,A,B,C,D}
+\providecommand\VERSION{A}
+\providecommand\FILE{exam}
+\providecommand\SOURCE{.}
+
+
+
+
 \def\AKINDI{akindi_answer_sheet.pdf}
 \def\BUBBLESHEET{\SOURCE/\AKINDI}
 
@@ -40,21 +51,6 @@
 }
 \ExplSyntaxOff
 
-
-    
-%––––– answer key (40 examples) –––––
-\ifdefined\KEY\else
-  \def\KEY{A,AB,ABC,ABCD,A,B,C,*,A,B,C,D,A,B,C,D,A,B,C,D,A,B,C,D,A,B,C,D,A,B,C,D,A,B,C,D,A,B,C,D}
-\fi
-\ifdefined\VERSION\else
-  \def\VERSION{A}
-\fi
-\ifdefined\FILE\else
-  \def\FILE{exam}
-\fi
-\ifdefined\SOURCE\else
-  \def\SOURCE{.}
-\fi
 
 \begin{document}
 
