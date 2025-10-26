@@ -7,7 +7,7 @@
 
 %% ===================================================
 % Avoind indentation of choices
-\def\choiceshook{\setlength{\leftmargin}{0pt}}
+\def\choiceshook{\setlength{\leftmargin}{2em}}
 %% ===================================================
 
 
@@ -45,7 +45,7 @@
   \ifx\relax#1\relax\else
     \multicolstrue
     % \medskip
-    \begin{multicols}{#1}
+    \begin{multicols}{#1}\raggedright
   \fi
   \oldchoices
 }{%
@@ -196,17 +196,18 @@
 }
 
 
-\newenvironment{splitquestion}[2][4em]{
-  \preto{\choices}{\medskip}
-  \newcommand{\nextpart}{
-    \end{minipage}\hfill
-    \begin{minipage}[t]{\sizeright}
-  }
-    \def\sizeleft{\dimexpr\fpeval{(1-#2)}\textwidth-#1\relax}
-    \def\sizeright{#2\textwidth}
-    \begin{minipage}[t]{\sizeleft}
+\newenvironment{splitquestion}[2][4em]{%
+  \par%
+  \preto{\choices}{\medskip}%
+  \newcommand{\nextpart}{%
+    \end{minipage}\hfill%
+    \begin{minipage}[t]{\sizeright}%
+  }%
+    \def\sizeleft{\dimexpr\fpeval{(1-#2)}\textwidth-#1\relax}%
+    \def\sizeright{#2\textwidth}%
+    \begin{minipage}[t]{\sizeleft}%
   }{%
-  \end{minipage}
+  \end{minipage}%
 }
 
 

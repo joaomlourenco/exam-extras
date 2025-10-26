@@ -1,48 +1,39 @@
-% % \edef\POINTSREM{\fpeval{\POINTSTOTAL-\POINTSMC}}
-% % % \SUBTRACT{\POINTSTOTAL}{\POINTSMC}{\POINTSREM}
-% % \edef\POINTSMCQ{\fpeval{\POINTSMC/\mynumquestionsmcq}}
-% % % \DIVIDE{\POINTSMC}{\mynumquestionsmcq}{\POINTSMCQ}
-% \SUBTRACT{\mynumquestions}{\mynumquestionsmcq}{\NUMQNOTMC}
-% \ifnum\NUMQNOTMC>0
-% \ifnum\numparts<1\relax\def\numparts{1}\fi
-% \DIVIDE{\POINTSREM}{\numparts}{\POINTSNOTMCQ}
-% \else
-% \def\POINTSNOTMCQ{0}
-% \fi
+% handle number of questions
 \def\NQ{
   \ifnum\mynumquestions>1 \mynumquestions\else 1 \fi
 }
 
-\def\PPQ{\fpeval{round(20/\NQ,3)}}
 
-\providecommand{\MAXPENALTYAT}{5}
-\providecommand{\MAXPENALTYPERCENT}{33}
-\edef\PENALTYSTEP{\fpeval{\MAXPENALTYPERCENT/(\MAXPENALTYAT-1)}}
+
+\edef\PPQ{\fpeval{round(\POINTSMC/\NQ,3)}} % points per question
+\edef\DPQ{\fpeval{round(\PPQ*\MAXDEDUCTIONPERCENT/100,3)}} % deduction per question
 \def\printpenalty{%
-  \null\hfill
-  \foreach[count=\i] \percentage in {0, \PENALTYSTEP, ..., \MAXPENALTYPERCENT} {
-    \edef\mypercent{\fpeval{round(\percentage,2)}}
-    $ \ifdim\mypercent pt=\MAXPENALTYPERCENT pt\ge\fi
-      \i =
-      \fpeval{round(\PPQ*\mypercent/100,3)}~(\mypercent\%)$
+  \raggedright
+  % \null\hfill
+  \foreach \i in {1, ..., \MAXDEDUCTIONAT} {
+    \edef\deductpercent{\fpeval{round(\MAXDEDUCTIONPERCENT/\MAXDEDUCTIONAT*\i,2)}}
+    \edef\deductpoints{\fpeval{round(\DPQ/\MAXDEDUCTIONAT*\i,3)}}
+    \if\i\MAXDEDUCTIONAT$\ge$\fi%
+    \i~=~\deductpoints~(\deductpercent\%)
   }
-  \hfill\null
+  % \hfill\null
 }
 
 
 \def\headerenglish{%
 \begin{center}
   {\Large Please read these instructions carefully!}
-  \begin{tcolorbox}[width=0.9\textwidth]
+  % \hspace*{\dimexpr(\paperwidth-0.9\paperwidth)/2\relax}
+  \begin{tcolorbox}[width=\textwidth]
 		\small% \setdefaultleftmargin{1em}{}{}{}{.55em}{.55em}
-		\begin{itemize}[itemsep=1pt,leftmargin=0.5cm]
-      \itemsep=0pt
+		\begin{itemize}[itemsep=0pt,leftmargin=0.5cm]
       \item Answer the questions on the answer sheet.
       \item You may use the back of the test paper sheets for scratch work.
       \item Do not unstaple the test paper sheets!
       \item Instructions for answering: 
       \newcommand{\CC}{\textcolor{black!60}{\CIRCLE}}
-      \newcommand{\cc}{\textcolor{Black!60}{\Circle}}
+      \newcommand{\cc}{\textcolor{Black!60}{\Circle}}\\[-2ex]
+      \null\hfill
       \begin{tabular}[t]{lccccc}
         & ~A & B & C & D & E~~\\
             Select the answer (A):                        
@@ -66,6 +57,7 @@
                   (\cc    & \rlap{\CC}{\kern-1pt$\bigtimes$} 
                                    & \cc   & \cc  & \cc)\\
       \end{tabular}
+      \hfill\null
       \item This \MakeLowercase{\TESTTYPE} has~\numquestions\ questions, each question is worth \PPQ\ points.
       \item \textbf{PENALTY POINTS} for incorrect answers:\\%\hspace*{4em}
       \printpenalty

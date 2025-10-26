@@ -1,0 +1,153 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% !TEX TS-program = pdflatex
+%
+% Created by Joao Lourenco on 2016-12-18.
+% Copyright (c) 2016 .
+
+\documentclass[
+  a4paper, 
+  answers,
+  11pt, % for font sizes > 12pt, uncomment '\usepackage{extsizes}' below
+]{exam}
+
+
+%========================================================
+% patch the exam class with new stuff
+\usepackage{exam-extras}
+
+%========================================================
+% Uncomment the next lines for Portuguese text
+% \setdefaultlanguage{portuguese}
+% \PassOptionsToPackage{main=portuguese}{babel}
+
+%========================================================
+% If you want font size larger than 12pt, uncomment this packages and change above
+% \usepackage{extsizes}
+
+%========================================================
+% Configure babel (for portuguse, chnage above, not here)
+\usepackage[english]{babel} % Do not change this
+
+%========================================================
+% Configure page margins
+% SMALL margins
+% \usepackage[vmargin=1.75cm,hmargin=1cm]{geometry} % Avoid changing this
+% WIDE margins
+\usepackage[vmargin=2.5cm,hmargin=2.5cm]{geometry} % Avoid changing this
+
+%========================================================
+% Configure fonts
+\usepackage[T1]{fontenc} % Do not change this
+\usepackage{lmodern} % Do not change this
+\usepackage[scaled=0.80,lining]{FiraMono} % Do not change this
+
+%========================================================
+% Configure colors
+\usepackage[dvipsnames]{xcolor} % Do not change this
+
+%========================================================
+% Configure graphics
+% All images must go to a folder named 'Figures'
+\usepackage{graphbox} % Do not change this
+\graphicspath{{Figures/}} % Do not change this
+
+%========================================================
+% Prettyprint code listings
+\usepackage{minted} % Do not change this
+\newminted[java]{java}{ % Do not change this
+      bgcolor=black!5,  % Light grey background color for code listings
+      escapeinside=§§,  % Use this characters to escape to LaTeX inside code listings
+}
+\usemintedstyle{bw} % Do not change this
+
+%========================================================
+% Prettyprint code listings — alternative
+% \usepackage{listings}
+% \lstset{
+%   numbers=none,
+%   inputpath=Figures,
+%   frame=none,
+%   basicstyle=\small,
+%   language=Python,
+%   morekeywords = {operation,
+%                   is,
+%                   done,
+%                   end,
+%                   wait,
+%                   wait_until,
+%                   pragma,
+%                   omp,
+%                   parallel,
+%                   firstprivate,
+%   }
+% }
+
+%========================================================
+% Default version is 'X'
+% The script 'exam-versions.sh' overides this definition 
+% with a proper version letter
+\providecommand\VERSION{X}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+% REAL STUFF STARTS HERE
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%========================================================
+% Useful packages
+% Add / remove packages as needed
+\usepackage{booktabs}   % for nice(r) tables
+\usepackage{mathtools}  % for better mathematics
+% \usepackage{amssymb}  % for better mathematics
+% \usepackage{latexsym} % for better mathematics
+\usepackage{wasysym}    % font with symbols — unsure why is needed
+\usepackage{makecell}   % For multile cells in tables
+
+
+  
+%========================================================
+% Configure the test / exam 
+\newcommand{\TESTTYPE}{Test}    % the tst type (e.g, Exam, …)
+\newcommand{\TESTNUMBER}{1}     % the test number
+\newcommand{\COURSE}{An Amazing Course}  % the name of the course
+\newcommand{\DATE}{2025-10-24}  % the date
+\newcommand{\YEAR}{2025-26}     % the academic year
+\newcommand{\DURATION}{1:30}    % duration of the test
+\newcommand{\POINTSTOTAL}{20}   % total points for the test (e.g., 100, 200, …)
+\newcommand{\POINTSMC}{\POINTSTOTAL} % points for MCQs (non-MCQs = \POINTSTOTAL - \POINTSMC)
+\newcommand{\NUMBEROFCHOICES}{4}% how many choices in each MCQ
+\newcommand{\MAXDEDUCTIONAT}{5} % for progrssive deduction on wrong questions
+\newcommand{\MAXDEDUCTIONPERCENT}{100/(\NUMBEROFCHOICES-1)} % e.g., 33,333% for 4 choice, 25,00% for 5 choices
+
+  
+%========================================================
+% Configure the sheet header in the test / exam sheets
+\firstpageheader{}{\COURSE~\YEAR~—~\TESTTYPE~\TESTNUMBER\hfill\raisebox{-2.5ex}{\tcbox{Version:~\textbf{\VERSION}}}\hfill \DATE~—~(Duration: \DURATION)}{}
+\firstpageheadrule
+\firstpageheadrule
+  
+
+%========================================================
+% Document starts here
+\begin{document}
+
+%========================================================
+% Use pre-defined test / exam header
+\input{exam-header.tex}
+	
+%========================================================
+% THE QUESTIONS
+\begin{questions}
+
+\input{example-questions}
+
+\end{questions}
+
+%========================================================
+% Document ends here
+\end{document}
+
+
