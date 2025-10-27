@@ -56,6 +56,36 @@ def load_keys_map(filename):
 
     return mapping
 
+def discover_versioned(prefix: str) -> tuple[list[str], str]:
+    """
+    Discover TeX source files matching either "<prefix>A.tex" or "<prefix>-A.tex".
+
+    Returns:
+        (versioned_files, file_prefix)
+        where versioned_files is a sorted list of matching filenames,
+        and file_prefix is the prefix pattern used (e.g., "exam-" or "exam").
+
+    Raises:
+        SystemExit if no matching files are found.
+    """
+    versioned = []
+    file_prefix = None
+
+    for pattern, fp in (
+        (f"{prefix}?.tex", f"{prefix}"),
+        (f"{prefix}-?.tex", f"{prefix}-"),
+    ):
+        matches = sorted(str(p) for p in Path(".").glob(pattern))
+        if matches:
+            versioned = matches
+            file_prefix = fp
+            break
+
+    if not versioned or file_prefix is None:
+        sys.stderr.write(f"[ERROR] No files found for prefix={prefix}.\n")
+        sys.exit(1)
+
+    return versioned, file_prefix
 
 def main():
     ap = argparse.ArgumentParser()
@@ -75,21 +105,9 @@ def main():
         sys.exit(1)
 
     prefix = args.prefix
-    
-    # Discover versions matching "<prefix>-?.tex" (single-character version tag).
-    file_prefix = f"{prefix}"        # matches original script’s $PREFIX
-    versioned = sorted(glob.glob(f"{file_prefix}?.tex"))
-    if not versioned:
-        file_prefix = f"{prefix}-"        # matches original script’s $PREFIX-
-        # Discover versions matching "<prefix>-?.tex" (single-character version tag).
-        versioned = sorted(glob.glob(f"{file_prefix}?.tex"))
-        
-    if not versioned:
-        # Mirror the shell script behavior: exit quietly if no matches.
-        sys.stderr.write(f"[ERROR] No files found for prefix={prefix}.\n")
-        sys.stderr.write("")
-        sys.exit(1)
 
+    versioned, file_prefix = discover_versioned(prefix)
+    
     exam_key_prefix = f"{file_prefix}key"  # e.g., "exam-key"
 
     # Extract version tags (the character after the last hyphen, before .tex).
