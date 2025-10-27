@@ -22,19 +22,20 @@ It comprises:
 
 ## Usage
 
-### 1. Extract Answer Keys
+### 1. Generate Answer Key PDFs
+
+`python exam-key-pdf.py PREFIX`
+
+- Calls the `exam-extract-key.py PREFIX` script to extract the test/exam KEY and saves the output to `PREFIX.keys`;
+- Reads the extracted answers for text/exam from the file `PREFIX.keys`;
+- Fills `exam-key.tex` template and compiles PDFs for each version (e.g., `PREFIX-key-a.pdf`).
+
+### 2. Extract Answer Keys (optional)
 
 `python exam-extract-key.py PREFIX`
 
 - Scans current folder for files like `PREFIX-a.tex` and `PREFIX-a-questions.tex` for multiple choice question;
 - Outputs tab-separated answer codes for each version (with `-o outfile` writes to `outfile` instead of terminal).
-
-### 2. Generate Answer Key PDFs
-
-`python exam-key-pdf.py PREFIX`
-
-- Reads extracted answers for text/exam PREFIX;
-- Fills `exam-key.tex` template and compiles PDFs for each version (e.g., `PREFIX-key-a.pdf`).
 
 
 ## Output
