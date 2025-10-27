@@ -15,9 +15,9 @@ It comprises:
 ## Prerequisites
 
 - Python 3.x
-- LaTeX distribution (with `exam` class)
-- `latexmk` installed and available in your PATH
-- Answer key template: `exam-key.tex` in the script directory
+- LaTeX distribution (with `exam` class);
+- `latexmk` installed and available in your PATH;
+- Answer key template: `exam-key.tex` in the script directory.
 
 
 ## Usage
@@ -26,51 +26,38 @@ It comprises:
 
 `python exam-extract-key.py PREFIX`
 
-- Scans files like `PREFIX-a.tex` and `PREFIX-a-questions.tex` for multiple choice question
+- Scans current folder for files like `PREFIX-a.tex` and `PREFIX-a-questions.tex` for multiple choice question;
 - Outputs tab-separated answer codes for each version (with `-o outfile` writes to `outfile` instead of terminal).
 
 ### 2. Generate Answer Key PDFs
 
 `python exam-key-pdf.py PREFIX`
 
-- Reads extracted answers for text/exam PREFIX
+- Reads extracted answers for text/exam PREFIX;
 - Fills `exam-key.tex` template and compiles PDFs for each version (e.g., `PREFIX-key-a.pdf`).
 
 
 ## Output
 
-- Tab-separated text file: `PREFIX.keys`
+- Tab-separated text file: `PREFIX.keys`;
 - PDF answer keys: `PREFIX-key-a.pdf`, `PREFIX-key-b.pdf`, etc.
 
 
 ## File Patterns Supported
 
-- `PREFIX-a-questions.tex`, `PREFIX-b-questions.tex`
-- `PREFIXa-questions.tex`, `PREFIXb-questions.tex`
-- Fallback: `PREFIX-a.tex`, `PREFIX-b.tex`
-
-
-## Template Requirements
-
-- Template must define commands: `\FILE`, `\VERSION`, `\KEY`
-- Example snippet:
-
-```latex
-\def\FILE{exam}
-\def\VERSION{A}
-\def\KEY{A,C,AC,D,*,…}
-```
+- `PREFIX-a-questions.tex`, `PREFIX-b-questions.tex`;
+- Fallback: `PREFIX-a.tex`, `PREFIX-b.tex`.
 
 
 ## Tips and Troubleshooting
 
-- Ensure all required packages are installed (`exam`, `latexmk`)
-- Run scripts from the directory containing both Python scripts and your LaTeX sources
-- For PDF errors, check if LaTeX template compiles independently
+- Ensure all required packages are installed (`exam`, `latexmk`);
+- Run scripts from the directory containing both Python scripts and your LaTeX sources;
+- For PDF errors, check if LaTeX template compiles independently.
 
 ## License
 
-The LaTeX Project Public License (LPPL Version 1.3c)
+The LaTeX Project Public License (LPPL Version 1.3c).
 
 ## Authors & Acknowledgments
 
