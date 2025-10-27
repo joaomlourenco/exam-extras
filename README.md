@@ -2,6 +2,8 @@
 
 The `exam-extras.sty` package is a comprehensive LaTeX style file designed to enhance the functionality of the `exam` document class for creating multiple-choice exams and assessments. Below is a detailed listing of its key functionalities, organized by category.
 
+The package includes scripts for automatic processing multiple versions of the same test/exam, and automatic key generation to submit to [Akindi](https://akindi.com).
+
 This package is particularly well-suited for **computer science and technical exams** where code snippets, boolean logic, and precise formatting are essential. Its modular design allows instructors to adopt individual features without requiring wholesale changes to existing exam templates.
 
 
@@ -18,7 +20,14 @@ The `exam-extras.sty` package is a **feature-rich extension** for the LaTeX `exa
 5. **Structural tools** for organizing exams into parts with continuous numbering
 6. **Code listing support** with syntax highlighting via `minted`
 7. **Side-by-side layouts** for questions with accompanying visuals
-8. **Multilingual boolean keywords** for true/false questions
+8. **Multilingual boBuilolean keywords** for true/false questions
+
+The `Build/exam-versions.sh` script takes PREFIX as argument and:
+1. Searches current folder for files matching `PREFIX-?.tex` or `PREFIX?.tex`patterns (where `?` is a letter, e.g., a, b, c, …)
+2. For each file found, compiles twice:
+  * First with `noanswers` → generates `PREFIX-print.pdf`
+  * Then with `answers` → generates `PREFIX-answers.pdf`
+3. Cleans up auxiliary files automatically  
 
 Find detailed information below…
 
