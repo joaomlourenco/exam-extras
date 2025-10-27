@@ -13,14 +13,14 @@ This package is particularly well-suited for **computer science and technical ex
 
 The `exam-extras.sty` package is a **feature-rich extension** for the LaTeX `exam` class, offering:
 
-1. **Enhanced visual design** with circled choice labels and horizontal separators
-2. **Flexible choice layouts** supporting both single- and multi-column formats
-3. **Robust question tracking** with persistent counters across compilations
-4. **Answer key enhancements** including colored correct answers and Bloom's taxonomy annotations
-5. **Structural tools** for organizing exams into parts with continuous numbering
-6. **Code listing support** with syntax highlighting via `minted`
-7. **Side-by-side layouts** for questions with accompanying visuals
-8. **Multilingual boBuilolean keywords** for true/false questions
+1. **Enhanced visual design** with circled choice labels and horizontal separators;
+2. **Flexible choice layouts** supporting both single- and multi-column formats;
+3. **Robust question tracking** with persistent counters across compilations;
+4. **Answer key enhancements** including colored correct answers and Bloom's taxonomy annotations;
+5. **Structural tools** for organizing exams into parts with continuous numbering;
+6. **Code listing support** with syntax highlighting via `minted`;
+7. **Side-by-side layouts** for questions with accompanying visuals; and
+8. **Multilingual boBuilolean keywords** for true/false questions.
 
 Find detailed information below…
 
@@ -30,10 +30,10 @@ Find detailed information below…
 
 The package loads several essential LaTeX packages to provide its extended functionality:
 
-- **`tcolorbox[most]`**: Enables colored boxes for code listings and visual elements
-- **`multicol`**: Supports multi-column layouts for choices
-- **`enumitem[inline,shortlabels]`**: Provides customizable enumeration with inline and short label options
-- **`tikz`**: Used for drawing circled choice labels
+- **`tcolorbox[most]`**: Enables colored boxes for code listings and visual elements;
+- **`multicol`**: Supports multi-column layouts for choices;
+- **`enumitem[inline,shortlabels]`**: Provides customizable enumeration with inline and short label options;
+- **`tikz`**: Used for drawing circled choice labels.
 
 These dependencies establish the foundation for the visual and structural enhancements throughout the package.
 
@@ -66,8 +66,8 @@ The package prevents unwanted indentation of choices by setting a consistent lef
 
 The redefined `choices` environment supports **optional multi-column layouts**:
 
-- **Without argument**: Displays choices in a single column
-- **With `[N]` argument**: Arranges choices in `N` columns using `multicols` with ragged-right alignment
+- **Without argument**: Displays choices in a single column;
+- **With `[N]` argument**: Arranges choices in `N` columns using `multicols` with ragged-right alignment.
 
 ```latex
 \renewenvironment{choices}[]{%
@@ -94,9 +94,9 @@ This provides flexibility for formatting questions with short choices (multi-col
 
 The package defines macros to access question counts safely:
 
-- **`\mynumquestions`**: Returns total number of questions, defaulting to 0 if undefined
-- **`\mynumquestionsmcq`**: Returns number of multiple-choice questions, defaulting to 1 if undefined
-- **`exam@numquestionsmcq` counter**: Tracks MCQ questions and increments with each `choices` environment
+- **`\mynumquestions`**: Returns total number of questions, defaulting to 0 if undefined;
+- **`\mynumquestionsmcq`**: Returns number of multiple-choice questions, defaulting to 1 if undefined;
+- **`exam@numquestionsmcq` counter**: Tracks MCQ questions and increments with each `choices` environment.
 
 ### Persistent Count Storage
 
@@ -284,8 +284,8 @@ The `splitquestion` environment creates **side-by-side layouts** for questions w
 ```
 
 **Parameters**:
-- `#1` (optional, default `4em`): Separation between columns
-- `#2` (mandatory): Fraction of `\textwidth` for the right column
+- `#1` (optional, default `4em`): Separation between columns;
+- `#2` (mandatory): Fraction of `\textwidth` for the right column.
 
 **Usage**:
 ```latex
