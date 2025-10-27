@@ -19,20 +19,21 @@ It comprises:
 - `latexmk` installed and available in your PATH
 - Answer key template: `exam-key.tex` in the script directory
 
+
 ## Usage
 
 ### 1. Extract Answer Keys
 
 `python exam-extract-key.py PREFIX`
 
-- Scans files like `PREFIX-a-questions.tex`, etc.
-- Outputs tab-separated answer codes for each version.
+- Scans files like `PREFIX-a.tex` and `PREFIX-a-questions.tex` for multiple choice question
+- Outputs tab-separated answer codes for each version (with `-o outfile` writes to `outfile` instead of terminal).
 
 ### 2. Generate Answer Key PDFs
 
 `python exam-key-pdf.py PREFIX`
 
-- Reads extracted answers
+- Reads extracted answers for text/exam PREFIX
 - Fills `exam-key.tex` template and compiles PDFs for each version (e.g., `PREFIX-key-a.pdf`).
 
 
@@ -41,11 +42,13 @@ It comprises:
 - Tab-separated text file: `PREFIX.keys`
 - PDF answer keys: `PREFIX-key-a.pdf`, `PREFIX-key-b.pdf`, etc.
 
+
 ## File Patterns Supported
 
 - `PREFIX-a-questions.tex`, `PREFIX-b-questions.tex`
 - `PREFIXa-questions.tex`, `PREFIXb-questions.tex`
 - Fallback: `PREFIX-a.tex`, `PREFIX-b.tex`
+
 
 ## Template Requirements
 
