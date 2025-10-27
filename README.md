@@ -27,7 +27,7 @@ The `Build/exam-versions.sh` script takes PREFIX as argument and:
 2. For each file found, compiles twice:
   * First with `noanswers` → generates `PREFIX-print.pdf`
   * Then with `answers` → generates `PREFIX-answers.pdf`
-3. Cleans up auxiliary files automatically  
+3. Cleans up auxiliary files automatically 
 
 Find detailed information below…
 
@@ -357,3 +357,16 @@ The package fine-tunes spacing in multi-column environments:
 
 This ensures consistent vertical spacing between choices in both single- and multi-column layouts.
 -->
+
+## License
+
+The LaTeX Project Public License (LPPL Version 1.3c)
+
+## Authors & Acknowledgments
+
+LaTeX extensions by [João Lourenço](https://docentes.fct.unl.pt/joao-lourenco).
+
+Shell script by  [João Lourenço](https://docentes.fct.unl.pt/joao-lourenco).
+Python scripts by [João Lourenço](https://docentes.fct.unl.pt/joao-lourenco), with the help of ChatGPT.
+
+Thanks to the author of the `exam` LaTeX class.

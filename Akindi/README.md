@@ -71,11 +71,7 @@ The LaTeX Project Public License (LPPL Version 1.3c)
 
 ## Authors & Acknowledgments
 
-LaTeX extensions by [João Lourenço](https://docentes.fct.unl.pt/joao-lourenco).
-
 Scripts by [João Lourenço](https://docentes.fct.unl.pt/joao-lourenco), with the help of ChatGPT.
-
-Thanks to the author of the `exam` LaTeX class.
 
 ---
 
