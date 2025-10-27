@@ -4,7 +4,6 @@ A python script for automatically compiling print and answer PDFs for multiple e
 
 ## Overview
 
-Documents all 10 major features with emojis for visual appeal:
 * 🎨 **Colorized output**;
 * 🔄 **Automatic version detection:** Detects all versioned `.tex` files (`exam-a.tex`, `exam-b.tex`, …);
 * 📄 **Dual PDF generation:** Runs `latexmk` twice per version (producing both *print* and *answers* PDFs);
