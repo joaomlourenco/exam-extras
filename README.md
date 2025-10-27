@@ -4,7 +4,7 @@ The `exam-extras.sty` package is a comprehensive LaTeX style file designed to en
 
 This package is particularly well-suited for **computer science and technical exams** where code snippets, boolean logic, and precise formatting are essential. Its modular design allows instructors to adopt individual features without requiring wholesale changes to existing exam templates.
 
-Find detailed information aboth the package in the [`TeX` folder](TeX)
+Find detailed information aboth the `exam-extras.sty` package in the [`TeX` folder](TeX)
 
 This repository also includes scripts for:
 * handling multiple versions of the same test/exam, in files `PREFIX-<X>.tex` (where `<X>` is a single letter), automatizing the generation of printable and answers versions of each version (see the [Build folder](Build])); and
