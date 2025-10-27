@@ -50,6 +50,7 @@ The package redefines how choice labels appear by encircling them with TikZ grap
 
 This creates **visually distinctive circled labels** (e.g., ①, ②, ③) in sans-serif font, improving readability and aesthetics.
 
+<--
 ### Indentation Control
 
 The package prevents unwanted indentation of choices by setting a consistent left margin:
@@ -57,6 +58,7 @@ The package prevents unwanted indentation of choices by setting a consistent lef
 ```latex
 \def\choiceshook{\setlength{\leftmargin}{2em}}
 ```
+-->
 
 ### Multi-Column vs. Single-Column Choices
 
