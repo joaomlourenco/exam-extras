@@ -30,7 +30,10 @@ It comprises:
 - Reads the extracted answers for text/exam from the file `PREFIX.keys`;
 - Fills `exam-key.tex` template and compiles PDFs for each version (e.g., `PREFIX-key-a.pdf`).
 
-### 2. Extract Answer Keys (optional)
+### 2. Extract Answer Keys
+
+This script is called automatically by the above `exam-key-pdf.py` script.  
+However, you may  call this script for debug purposes.
 
 `python exam-extract-key.py PREFIX`
 
