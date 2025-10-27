@@ -67,12 +67,15 @@ It comprises:
 
 ## License
 
-MIT or similar permissive license recommended
+The LaTeX Project Public License (LPPL Version 1.3c)
 
 ## Authors & Acknowledgments
 
-Scripts by [Your Name], extended from exam class workflow.  
-Thanks to contributors to the `exam` LaTeX class.
+LaTeX extensions by [João Lourenço](https://docentes.fct.unl.pt/joao-lourenco).
+
+Scripts by [João Lourenço](https://docentes.fct.unl.pt/joao-lourenco), with the help of ChatGPT.
+
+Thanks to the author of the `exam` LaTeX class.
 
 ---
 
