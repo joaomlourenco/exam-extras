@@ -1,4 +1,4 @@
-# Exam Versions Script (`exam-versions.sh`)
+# Exam Versions Script (`exam-versions.py`)
 
 A python script for automatically compiling print and answer PDFs for multiple exam versions using LaTeX.
 
