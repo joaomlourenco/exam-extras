@@ -1,50 +1,55 @@
-% myexam-extras
-\RequirePackage[most]{tcolorbox}
-\RequirePackage{multicol}
-\RequirePackage[inline,shortlabels]{enumitem}
+% ==============================
+% myexam-extras — structured
+% ==============================
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{exam-extras}%
+  [2025/10/27 v1.1 Extended macros and layout helpers for exam class]
 
+% --------------------------------------------------
+% Package requirements (load before features below)
+% --------------------------------------------------
+\RequirePackage[most]{tcolorbox}     % for framed boxes / listings
+\RequirePackage{multicol}            % multi-column choices
+\RequirePackage[inline,shortlabels]{enumitem} % list tuning (choices margins)
+\RequirePackage{tikz}                % drawing (encircled labels)
+\RequirePackage{iftex}               % to allow conditional definitions
 
-
-%% ===================================================
-% Avoind indentation of choices
+% --------------------------------------------------
+% List / layout tweaks for choices & multicols
+% --------------------------------------------------
+% Avoid indentation of choices
 \def\choiceshook{\setlength{\leftmargin}{2em}}
-%% ===================================================
 
-
+% Multicol spacing to match item spacing
 \premulticols=0pt
-% \RequirePackage{enumitem}
 \multicolsep=\itemsep
 
-\RequirePackage{tikz}
+% --------------------------------------------------
+% Choice label styling (encircled letters)
+% --------------------------------------------------
 \newcommand\encircle[1]{%
   \tikz[baseline=(X.base)] 
     \node (X) [draw, shape=circle, inner sep=0] {\strut #1};}
-
 \renewcommand\choicelabel{\encircle{\textsf{\thechoice}}}
-% \RequirePackage{xpatch}
 
-\def\mynumquestions{\@ifundefined{exam@numquestions}%
-  {0}%
-  \exam@numquestions
-}% mynumquestions
-
-\def\mynumquestionsmcq{\@ifundefined{exam@numquestionsmcq}%
-  {1}%
-  {\exam@numquestionsmcq}%
-}% mynumquestionsmc
+% --------------------------------------------------
+% Question/choice counters & helpers
+% --------------------------------------------------
+\def\mynumquestions{\@ifundefined{exam@numquestions}{0}{\exam@numquestions}}% total questions
+\def\mynumquestionsmcq{\@ifundefined{exam@numquestionsmcq}{1}{\exam@numquestionsmcq}}% MCQ blocks
 
 \NewCommandCopy\oldchoices\choices
 \NewCommandCopy\endoldchoices\endchoices
 
 \newif\ifmulticols
 \newcounter{exam@numquestionsmcq}
+
+% Rewrap the 'choices' env to optionally enable multicols
 \renewenvironment{choices}[1][]{%
-  % \smallskip
   \stepcounter{exam@numquestionsmcq}
   \multicolsfalse
   \ifx\relax#1\relax\else
     \multicolstrue
-    % \medskip
     \begin{multicols}{#1}\raggedright
   \fi
   \oldchoices
@@ -55,21 +60,20 @@
   \fi
 }
 
+% Persist the MCQ counter at end of document
 \AtEndDocument{%
-    \immediate\write\@mainaux
-      {\string\gdef\string\exam@numquestionsmcq{\theexam@numquestionsmcq}}%
+  \immediate\write\@mainaux
+    {\string\gdef\string\exam@numquestionsmcq{\theexam@numquestionsmcq}}%
 }
 
+% --------------------------------------------------
+% Question headings & separators
+% --------------------------------------------------
 \let\oldquestionlabel\questionlabel
 \newcommand\myrule[1][1pt]{\makebox[0pt]{\raisebox{2.5ex}{\rule{3\textwidth}{#1}}}}
 \renewcommand\questionlabel{\questionseparator\\\oldquestionlabel}
 
-
-\CorrectChoiceEmphasis{\color{red!80!black}}%\bfseries}
-
-% \qformat{Question \thequestion \dotfill \thepoints}
-
-
+% Visual section breaks inside answer key / printed answers
 \def\@newsectiontitle{}
 \newif\if@newsection
 \@newsectionfalse
@@ -85,8 +89,106 @@
   \else\myrule\fi%
 }}
 
+% --------------------------------------------------
+% Correct-choice emphasis (answer key styling)
+% --------------------------------------------------
+\CorrectChoiceEmphasis{\color{red!80!black}} % could add \bfseries if desired
 
+% --------------------------------------------------
+% Bloom tagging (only when printing answers)
+% --------------------------------------------------
+\newcommand{\BLOOM}[1]{\ifprintanswers\textcolor{blue}{\textbf{[#1] }}\fi}
+\newcommand{\Bloom}{\BLOOM}
 
+% --------------------------------------------------
+% Float/caption spacing (tight)
+% --------------------------------------------------
+\setlength{\abovecaptionskip}{2pt plus 0pt minus 2pt}
+\setlength{\belowcaptionskip}{2pt plus 0pt minus 2pt}
+
+% --------------------------------------------------
+% Part break helper environment
+% --------------------------------------------------
+\newcounter{XXX}
+\newcommand{\exampart}[1]{%
+  \end{questions}%
+  \setcounter{XXX}{\value{numquestions}}%
+  \begin{center}
+    \LARGE
+    \vspace{2ex}
+    \begin{tabular}{p{\linewidth}}
+      \toprule
+      \centering Part #1\\
+      % \bottomrule
+    \end{tabular}
+  \end{center}
+  \begin{questions}
+    \setcounter{question}{\value{XXX}}%
+}
+
+% --------------------------------------------------
+% Boxing helpers (store content once; reuse)
+% --------------------------------------------------
+\ifcsname fmbox\endcsname\else\newsavebox{\fmbox}\fi
+\newcommand{\choicebox}[1]{\sbox{\fmbox}{#1}\usebox{\fmbox}}
+
+% Token pasting helpers
+\protected\long\def\appto#1#2{%
+  \edef#1{%
+    \unexpanded\expandafter{#1#2}%
+  }%
+}
+\protected\long\def\preto#1#2{%
+  \edef#1{%
+    \unexpanded{#2}%
+    \unexpanded\expandafter{#1}%
+  }%
+}
+% \renewcommand{\questionshook}{\preto\thequestiontitle{\vspace{2ex}\hrule}}
+
+% --------------------------------------------------
+% Code listing box (tcolorbox + minted engine)
+% --------------------------------------------------
+\DeclareTCBListing{code}{ m O{} }{%
+    colback=white,
+    colframe=black!70,
+    listing only,
+    listing remove caption=true,
+    minted language=#1,
+    listing engine=minted,
+    minted style=material,
+    minted options={
+        linenos,
+        breaklines,
+        numbersep=3mm
+    },
+    width=\linewidth,
+    breakable,
+    enhanced jigsaw,
+    #2
+}
+
+% --------------------------------------------------
+% Split question layout: left statement / right choices
+%   Usage: \begin{splitquestion}[gutter]{right_fraction} ... \end{splitquestion}
+% --------------------------------------------------
+\newenvironment{splitquestion}[2][4em]{%
+  \par%
+  \preto{\choices}{\medskip}%
+  \newcommand{\nextpart}{%
+    \end{minipage}\hfill%
+    \begin{minipage}[t]{\sizeright}%
+  }%
+  \def\sizeleft{\dimexpr\fpeval{(1-#2)}\textwidth-#1\relax}%
+  \def\sizeright{#2\textwidth}%
+  \begin{minipage}[t]{\sizeleft}%
+}{%
+  \end{minipage}%
+}
+
+% --------------------------------------------------
+% Convenience macros for capitalized tokens (pt/EN mixed)
+% --------------------------------------------------
 \newcommand{\defcapb}[2][]{%
   \ifx\relax#1\relax
     \expandafter\newcommand\csname#2\endcsname{\textbf{#2}\xspace}%
@@ -107,110 +209,9 @@
 \defcapb{FALSA}
 \defcapb{FALSO}
 
-
-\newcommand{\BLOOM}[1]{\ifprintanswers\textcolor{blue}{\textbf{[#1] }}\fi}
-\newcommand{\Bloom}{\BLOOM}
-
-\setlength{\abovecaptionskip}{2pt plus 0pt minus 2pt}
-\setlength{\belowcaptionskip}{2pt plus 0pt minus 2pt}
-
-\newcounter{XXX}
-\newcommand{\exampart}[1]{
-\end{questions}
-\setcounter{XXX}{\value{numquestions}}
-\begin{center}
-	\LARGE
-	\vspace{2ex}
-	\begin{tabular}{p{\linewidth}}
-		\toprule
-		\centering Part #1\\
-		% \bottomrule
-	\end{tabular}
-\end{center}
-\begin{questions}
-\setcounter{question}{\value{XXX}}
-}
-
-
-\newlength{\myboxheight}
-\newlength{\myboxdepth}
-
-% \newsavebox{\fmbox}
-% \CorrectAnswerEmphasis{%
-%   \begin{lrbox}{\fmbox}%
-%     \begin{varwidth}{\linewidth}%
-% }{%
-%     \end{varwidth}
-%   \end{lrbox}
-%   \settoheight{\myboxheight}{\usebox{\fmbox}}
-%   \settoheight{\myboxdepth}{\usebox{\fmbox}}
-%   \raisebox{-\myboxheight+1.4mm}{%
-%     \tcbox[colback=Apricot,left=1mm,right=1mm,top=-0.1mm,bottom=0.1mm,boxsep=0mm,colframe=Apricot]{\usebox{\fmbox}}%
-%   }
-% }
-% \CorrectChoiceEmphasis{}
-
-\newcommand{\CHOICE}{\CorrectChoice}
-
-% \newenvironment{putinbox}
-% {\ifcsname fmbox\endcsname\else\newsavebox{\fmbox}\fi\begin{lrbox}{\fmbox}}%
-% {\end{lrbox}\usebox{\fmbox}}
-\ifcsname fmbox\endcsname\else\newsavebox{\fmbox}
-\newcommand{\choicebox}[1]{\sbox{\fmbox}{#1}\usebox{\fmbox}}
-
-\protected\long\def\appto#1#2{%
-  \edef#1{%
-    \unexpanded\expandafter{#1#2}%
-  }%
-}
-\protected\long\def\preto#1#2{%
-  \edef#1{%
-    \unexpanded{#2}%
-    \unexpanded\expandafter{#1}%
-  }%
-}
-
-% \renewcommand{\questionshook}{\preto\thequestiontitle{\vspace{2ex}\hrule}}
-
-
-% m=mandatory argument
-% O{}=optional argument
-\DeclareTCBListing{code}{ m O{} }{
-    colback=white,
-    colframe=black!70,
-    listing only,
-    listing remove caption=true,
-    minted language=#1,
-    listing engine=minted,
-    minted style=material,
-    minted options={
-        linenos,
-        breaklines,
-        numbersep=3mm
-    },
-    % title={#2},
-    width=\linewidth,
-    breakable,
-    enhanced jigsaw,
-    #2
-}
-
-
-\newenvironment{splitquestion}[2][4em]{%
-  \par%
-  \preto{\choices}{\medskip}%
-  \newcommand{\nextpart}{%
-    \end{minipage}\hfill%
-    \begin{minipage}[t]{\sizeright}%
-  }%
-    \def\sizeleft{\dimexpr\fpeval{(1-#2)}\textwidth-#1\relax}%
-    \def\sizeright{#2\textwidth}%
-    \begin{minipage}[t]{\sizeleft}%
-  }{%
-  \end{minipage}%
-}
-
-
-
-
-\DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}
+% --------------------------------------------------
+% Unicode conveniences (≈)
+% --------------------------------------------------
+\ifpdftex
+  \DeclareUnicodeCharacter{2248}{\ensuremath{\approx}}
+\fi
