@@ -51,7 +51,10 @@ class C:
         BOLD=DIM=RED=GREEN=YELLOW=BLUE=CYAN=GRAY=RESET=""  # no color on non-tty
 
 # ---------- Regex to toggle answers/noanswers (matches start-of-line token) ----------
-_ANSWERS_LINE = re.compile(r'^( *%? *,? *)(?:no)?answers\b', re.MULTILINE)
+# Captures only leading whitespace in group 1; the optional comment marker and
+# optional 'no' prefix are consumed but NOT captured, so replacements can
+# unconditionally add or omit '% ' without duplicating it.
+_ANSWERS_LINE = re.compile(r'^( *)%?[ \t]*(?:no)?answers\b', re.MULTILINE)
 
 # ---------- Helpers ----------
 def find_version_files(base: str) -> List[Path]:
@@ -67,9 +70,10 @@ def version_letter_from_filename(tex_path: Path) -> str:
     return tex_path.stem[-1]
 
 def set_answers_mode(text: str, mode: str) -> str:
-    replacement = r"\1" + ("answers" if mode == "answers" else "noanswers")
     if _ANSWERS_LINE.search(text) is None:
         return text
+    # For answers: uncomment the option.  For print: comment it out.
+    replacement = r"\1answers" if mode == "answers" else r"\1% answers"
     return _ANSWERS_LINE.sub(replacement, text)
 
 def run_latexmk(
@@ -93,6 +97,8 @@ def run_latexmk(
         result = subprocess.run(
             cmd,
             text=True,
+            encoding="utf-8",
+            errors="replace",   # tolerate non-UTF-8 bytes (e.g. Latin-1 from LaTeX)
             capture_output=True,
             check=False
         )

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import re
 import argparse
 import subprocess
 import sys
@@ -36,8 +37,15 @@ def parse_args() -> argparse.Namespace:
         "prefix",
         help="Prefix for versioned TeX files, e.g., 'exam' for exam-A.tex, exam-B.tex",
     )
+    # --- ADDED CODE START ---
+    ap.add_argument(
+        "-k", "--key-file",
+        help="Name of the key file to generate/read. Defaults to '<prefix>-keys.txt' if not specified.",
+        default=None
+    )
+    # --- ADDED CODE END ---
     return ap.parse_args()
-
+    
 
 # ──────────────────────────────────────────────────────────────────────────────
 # 2) Environment + path resolution
@@ -117,7 +125,7 @@ def load_version_key_map(keys_txt_path: Path) -> Dict[str, str]:
         if not raw.strip():
             continue
         parts = raw.split("\t")
-        version = parts[0].strip()
+        version = re.search(r'\[([A-Za-z])\]', parts[0]).group(1)
         answers = " ".join(p.strip() for p in parts[1:] if p.strip())
         if not version:
             continue
@@ -234,8 +242,11 @@ def main() -> None:
     versions = [Path(p).stem.split("-")[-1] for p in versioned]
 
     # Extract all keys (the extractor prints multiple lines; we store them in one file)
-    keys_file = f"{prefix}.keys"
-    run_extractor_to_file(extract_key, prefix, keys_file)
+    if args.key_file:
+        keys_file = args.key_file
+    else:
+        keys_file = f"{prefix}-keys.txt"
+        run_extractor_to_file(extract_key, prefix, keys_file)
     # load keys into dictionary
     version_to_key = load_version_key_map(Path(keys_file))
 
