@@ -1,0 +1,173 @@
+\documentclass[a4paper]{article}
+
+\usepackage{currfile}
+
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{paperwidth=210mm, paperheight=297mm, margin=0pt}
+
+\pagestyle{empty}
+
+
+
+
+%––––– example answer key (40 questions) –––––
+\providecommand\VERSION{A}
+% \providecommand\FILE{exam}
+\providecommand\FILE{Test 2}
+\providecommand\SOURCE{.}
+% \providecommand\COURSE{Course Name}
+\providecommand\COURSE{Arquiteura de Computadores}
+% \providecommand\DATE{0000-00-00}
+\providecommand\DATE{2026-06-08}
+\providecommand\NQUESTIONS{40}
+
+
+
+
+
+\def\AKINDI{akindi_answer_sheet.pdf}
+\def\BUBBLESHEET{\SOURCE/\AKINDI}
+
+
+%––––– A→0 … E→4 –––––
+\newcommand{\mapLetterToNumber}[2]{%
+  \def\tempA{A}%
+  \def\tempB{B}%
+  \def\tempC{C}%
+  \def\tempD{D}%
+  \def\tempE{E}%
+  \edef\inputletter{#1}%
+  \ifx\inputletter\tempA \edef#2{0}%
+  \else\ifx\inputletter\tempB \edef#2{1}%
+  \else\ifx\inputletter\tempC \edef#2{2}%
+  \else\ifx\inputletter\tempD \edef#2{3}%
+  \else\ifx\inputletter\tempE \edef#2{4}%
+  \else \PackageError{mapLetterToNumber}{Invalid letter `#1'}{}%
+  \fi\fi\fi\fi\fi
+}
+
+\ExplSyntaxOn
+\newcommand{\foreachcharin}[2]{%
+  \tl_set:Nn \l_tmpa_tl {#1}%
+  \tl_map_inline:Nn \l_tmpa_tl {#2}%
+}
+\ExplSyntaxOff
+
+
+\begin{document}
+
+\begin{tikzpicture}[remember picture,overlay,yscale=-1]  % y-axis downwards
+  % background sheet
+  \node[anchor=center] at (current page.center)
+        {\includegraphics[width=\paperwidth,height=\paperheight]{\BUBBLESHEET}};
+
+  % global parameters
+  \def\fillColor{blue!90!black}
+  \def\lightgray{black!20}
+  \def\radius{0.18cm}
+  \def\ExameTXT{\color{\fillColor}\textsf{\LARGE \FILE-\VERSION}}
+
+  % exam ID (all in cm)
+  \def\exmX{2cm}
+  \def\exmY{2.1cm}
+
+  % Course Name (all in cm)
+  \def\courseX{1.5cm}
+  \def\courseY{6.65cm}
+  \def\CourseNameTXT{\color{\fillColor}\textsf{\LARGE \COURSE}}
+
+  % Date (all in cm)
+  \def\dateX{1.5cm}
+  \def\dateY{7.7cm}
+  \def\DateTXT{\color{\fillColor}\textsf{\LARGE \DATE}}
+
+  % version layout constants (all in cm)
+  \def\verX{1.69}
+  \def\verY{8.69}
+  \def\verStepX{0.729}
+
+  % number layout constants (all in cm)
+  \def\numX{\verX}
+  \def\numY{10.80}
+  \def\numStepX{\verStepX}
+
+  % coluymns layout constants (all in cm)
+  \def\colX{11.72}
+  \def\colY{4.13}
+  \def\colOffset{4.72}
+  \def\colStepX{\verStepX}
+  \def\colStepY{0.63}
+        
+  % exam ID
+  \node[anchor=west] at ($(current page.north west)+(\exmX,\exmY)$) {\ExameTXT};
+        
+  % Course Name
+  \node[anchor=west] at ($(current page.north west)+(\courseX,\courseY)$) {\CourseNameTXT};
+        
+  % Date
+  \node[anchor=west] at ($(current page.north west)+(\dateX,\dateY)$) {\DateTXT};
+        
+  % version
+  \mapLetterToNumber{\VERSION}{\xoff}
+  \draw[black,fill=\fillColor]   ($(current page.north west)+(\verX + \xoff * \verStepX, \verY)$)   circle[radius=\radius];
+
+  % cover part of the number
+  \draw[white,fill=white]   ($(current page.north west)+(\numX+3.32, \numY-1.14)$)   rectangle ++(3.7cm, 7.1cm);
+
+  % cover part of the questions
+  \ifnum\NQUESTIONS<26
+    \draw[white,fill=white]   ($(current page.north west) +
+                                    ( {\colX - (1.2 * \colStepX)},
+                                      {\colY - (0.5 * \colStepY) + (\NQUESTIONS * \colStepY)} )
+                            $)   rectangle ++(3.7cm, { (25 - \NQUESTIONS) * \colStepY });
+    \draw[white,fill=white]   ($(current page.north west) +
+                                (\colX + \colOffset - 1 * \colStepX,
+                                 \colY - 0.5 * \colStepY - 0.4)
+                            $)   rectangle ++(3.7cm, 25 * \colStepY + 0.4);
+  \else  
+  \ifnum\NQUESTIONS<50
+    \draw[white,fill=white]   ($(current page.north west) +
+                                    ( {\colX + \colOffset - (1.2 * \colStepX)},
+                                      {\colY - (0.5 * \colStepY) + ((\NQUESTIONS - 25) * \colStepY)} )
+                            $)   rectangle ++(3.7cm, { (50 - \NQUESTIONS) * \colStepY });
+  \fi
+  \fi
+
+  % cover part of the questions
+  % \ifnum\NQUESTIONS<50
+  %   \draw[white,fill=red]   ($(current page.north west)+(\colX + \colOffset , \colY)$)   rectangle ++(3.7cm, \colStepY);
+  % \fi
+ 
+  % number
+  % \foreach \i in {0,...,9} {
+  %     \draw[black,fill=\fillColor]   ($(current page.north west)+(\numX + \i * \numStepX, \numY)$)   circle[radius=\radius];
+  % }
+
+  %––––– loop over answers –––––
+%   \newcounter{row}       % counts questions 0,1,2,…
+%   \newcounter{col}       % counts questions 0,1
+%   \foreach \ans in \KEY {%
+%       \pgfmathtruncatemacro{\rowidx}{\value{row}}%  raw number (no units/spaces)
+%       \pgfmathtruncatemacro{\colidx}{\value{col}}%  raw number (no units/spaces)
+%       \if\ans*
+%         \edef\ans{ABCD}
+%       \fi
+% \expandafter\foreachcharin\expandafter{\ans}{
+%   \mapLetterToNumber{##1}{\xoff}%
+%   \draw[black,fill=\fillColor]
+%     ($ (current page.north west) +
+%        (\colX + \colidx * \colOffset + \xoff * \colStepX,
+%         \colY + \rowidx * \colStepY)$)
+%     circle[radius=\radius];
+% }
+%
+%       \stepcounter{row}% advance to next question
+%       \ifnum\value{row}=25 \setcounter{row}{0}\stepcounter{col}\fi
+%  }
+\end{tikzpicture}
+
+\end{document}
